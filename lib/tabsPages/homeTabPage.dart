@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:driver_app/allScreen/registerationScreen.dart';
 import 'package:driver_app/configMaps.dart';
 import 'package:driver_app/main.dart';
+import 'package:driver_app/notification/pushNotificationService.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
@@ -30,6 +32,13 @@ class _HomeTabPageState extends State<HomeTabPage> {
 
   bool isDriverAvailable=false;
 
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentDriverInfo();
+  }
+
   Position currentPosition;
 
   var geoLocator=Geolocator();
@@ -43,6 +52,14 @@ class _HomeTabPageState extends State<HomeTabPage> {
     newGoogleMapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
    // String address= await AssistantMethods.searchCoordinateAddress(position,context);
     //print('this is your address :' + address);
+  }
+
+  void getCurrentDriverInfo()async
+  {
+   currentFireBaseUser= await FirebaseAuth.instance.currentUser;
+   PushNotificationService pushNotificationService = PushNotificationService();
+   pushNotificationService.initialize();
+   pushNotificationService.getToken();
   }
 
   @override
