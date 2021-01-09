@@ -1,4 +1,5 @@
 
+import 'package:driver_app/configMaps.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
@@ -153,9 +154,10 @@ class LoginScreen extends StatelessWidget {
 
     if(firebaseUser !=null)
         {
-          usersRef.child(firebaseUser.uid).once().then( (DataSnapshot snap)
+          driversRef.child(firebaseUser.uid).once().then( (DataSnapshot snap)
           {
             if(snap.value != null ){
+              currentFireBaseUser=firebaseUser;
               Navigator.pushNamedAndRemoveUntil(context, MainScreen.idScreen, (route) => false);
               displayToastMessage("you are logged-in now", context);
           }else
