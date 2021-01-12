@@ -1,4 +1,5 @@
 
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:driver_app/main.dart';
 import 'package:driver_app/models/rideDetials.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -70,6 +71,10 @@ class PushNotificationService
 
 
       if (dataSnapshot.value != null) {
+
+           assetsAudioPlayer.open(Audio('sounds/alert.mp3'));
+       assetsAudioPlayer.play();
+
 
         double pickUpLocationLat = double.parse(
             dataSnapshot.value['pickUp']['latitude'].toString());

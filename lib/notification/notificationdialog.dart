@@ -1,4 +1,9 @@
+import 'package:driver_app/allScreen/newRideScreen.dart';
+import 'package:driver_app/allScreen/registerationScreen.dart';
+import 'package:driver_app/configMaps.dart';
+import 'package:driver_app/main.dart';
 import 'package:driver_app/models/rideDetials.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -71,7 +76,10 @@ class NotificationDialog extends StatelessWidget {
                       textColor: Colors.red,
                       padding: EdgeInsets.all(8.0),
 
-                      onPressed: (){},
+                      onPressed: (){
+                      assetsAudioPlayer.stop();
+                      Navigator.pop(context);
+                      },
                       child: Text('Cancel'.toUpperCase(),
                     style: TextStyle(
                       fontSize: 14.0
@@ -80,7 +88,10 @@ class NotificationDialog extends StatelessWidget {
                   ),
                  SizedBox(width: 20.0,),
                  RaisedButton(
-                     onPressed: (){},
+                     onPressed: (){
+                       assetsAudioPlayer.stop();
+                       checkAvailabilityOfRide(context);
+                     },
                    shape: RoundedRectangleBorder(
                      borderRadius: BorderRadius.circular(18.0),
                      side: BorderSide(color: Colors.green ),
@@ -101,5 +112,36 @@ class NotificationDialog extends StatelessWidget {
          ),
       ),
     );
+  }
+  void checkAvailabilityOfRide(context)
+  {
+    rideRequestRef.once().then((DataSnapshot dataSnapshot)
+    {
+      Navigator.pop(context);
+      String theRideId='';
+      if(dataSnapshot.value != null)
+        {
+          theRideId=dataSnapshot.value.toString();
+        }else
+          {
+            displayToastMessage('Ride not exists', context);
+          }
+      if(theRideId== rideDetails.ride_request_id)
+        {
+          rideRequestRef.set('accepted');
+          Navigator.push(context, MaterialPageRoute(builder: (context)=> NewRideScreen(rideDetails:rideDetails)));
+        }else if(theRideId == 'cancelled')
+          {
+            displayToastMessage('Ride has been canceled', context);
+          }
+      else if(theRideId == 'timeOut')
+      {
+        displayToastMessage('Ride has time out', context);
+      }
+      else
+      {
+        displayToastMessage('Ride not exists', context);
+      }
+    });
   }
 }
