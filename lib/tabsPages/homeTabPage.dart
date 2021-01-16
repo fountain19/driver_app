@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:driver_app/allScreen/registerationScreen.dart';
 import 'package:driver_app/configMaps.dart';
 import 'package:driver_app/main.dart';
+import 'package:driver_app/models/drivers.dart';
 import 'package:driver_app/notification/pushNotificationDialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
@@ -39,7 +41,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
     getCurrentDriverInfo();
   }
 
-  Position currentPosition;
+
 
   var geoLocator=Geolocator();
 
@@ -58,6 +60,13 @@ class _HomeTabPageState extends State<HomeTabPage> {
   {
    currentFireBaseUser= await FirebaseAuth.instance.currentUser;
    PushNotificationService pushNotificationService = PushNotificationService();
+   driversRef.child(currentFireBaseUser.uid).once().then((DataSnapshot datasnapshot)
+   {
+     if(datasnapshot.value != null)
+       {
+             driversInformation =   Drivers.fromSnapshot(datasnapshot);
+       }
+   });
    pushNotificationService.initialize(context);
    pushNotificationService.getToken();
   }

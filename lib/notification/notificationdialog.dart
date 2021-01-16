@@ -1,5 +1,6 @@
 import 'package:driver_app/allScreen/newRideScreen.dart';
 import 'package:driver_app/allScreen/registerationScreen.dart';
+import 'package:driver_app/assistants/assistantMethods.dart';
 import 'package:driver_app/configMaps.dart';
 import 'package:driver_app/main.dart';
 import 'package:driver_app/models/rideDetials.dart';
@@ -129,6 +130,7 @@ class NotificationDialog extends StatelessWidget {
       if(theRideId== rideDetails.ride_request_id)
         {
           rideRequestRef.set('accepted');
+          AssistantMethods.disableHomeTabLiveLocationUpdates();
           Navigator.push(context, MaterialPageRoute(builder: (context)=> NewRideScreen(rideDetails:rideDetails)));
         }else if(theRideId == 'cancelled')
           {
