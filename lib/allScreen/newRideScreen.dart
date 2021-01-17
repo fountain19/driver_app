@@ -1,14 +1,15 @@
 import 'dart:async';
 
 
+import 'package:driver_app/allWidgets/collectFareDailog.dart';
 import 'package:driver_app/allWidgets/progressDialog.dart';
 import 'package:driver_app/assistants/assistantMethods.dart';
 import 'package:driver_app/assistants/mapsKitAssistant.dart';
 import 'package:driver_app/configMaps.dart';
 import 'package:driver_app/main.dart';
 import 'package:driver_app/models/rideDetials.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -45,6 +46,10 @@ Position myPosition;
 String status='accepted';
 String durationRide='';
 bool isRequestingDirection = false;
+String btnTitle = 'Arrived';
+Color btnColor= Colors.blueAccent ;
+Timer timer;
+int  durationCounter= 0;
 
 @override
   void initState() {
@@ -179,17 +184,51 @@ bool isRequestingDirection = false;
                     Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16.0),
                     child: RaisedButton(
-                        onPressed: (){
+                        onPressed: ()async {
+                           if(status =='accepted' )
+                             {
+                               status = 'arrived';
+                               String rideRequestId = widget.rideDetails.ride_request_id;
+                               newRequestRef.child(rideRequestId).child('status').set(status);
+                               setState(() {
+                                 btnTitle ='Start trip';
+                                 btnColor = Colors.purple;
+                               });
+                               showDialog(
+                                   context: context ,
+                               barrierDismissible: false,
+                                 builder: (BuildContext context)=>ProgressDialog(
+                                  message: 'Please wait...',
+                                 )
 
+                               );
+                               await getPlaceDirection(widget.rideDetails.pickUp, widget.rideDetails.dropOff);
+                               Navigator.pop(context);
+                             }
+                           else if(status =='arrived' )
+                           {
+                             status = 'onRide';
+                             String rideRequestId = widget.rideDetails.ride_request_id;
+                             newRequestRef.child(rideRequestId).child('status').set(status);
+                             setState(() {
+                               btnTitle ='End trip';
+                               btnColor = Colors.redAccent;
+                             });
+                             initTimer();
+                           }
+                           else if(status =='onRide' )
+                             {
+                               endTheTrip();
+                             }
                         },
-                        color: Theme.of(context).accentColor,
+                        color: btnColor,
                         child:Padding(
                           padding: EdgeInsets.all(17.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Arrived',style: TextStyle(fontSize: 20.0,
+                                btnTitle,style: TextStyle(fontSize: 20.0,
                               fontWeight: FontWeight.bold,color: Colors.black
                               ),
                               ),
@@ -369,5 +408,64 @@ bool isRequestingDirection = false;
         isRequestingDirection=false;
       }
 
+  }
+  void initTimer()
+  {
+    const interval = Duration(seconds: 1 );
+    timer = Timer.periodic(interval, (timer) {
+      durationCounter= durationCounter+1;
+    });
+
+  }
+  endTheTrip()async
+  {
+    timer.cancel();
+
+
+    showDialog(
+        context: context ,
+        barrierDismissible: false,
+        builder: (BuildContext context)=>ProgressDialog(
+          message: 'Please wait...',
+        )
+    );
+
+    var currentLatlng= LatLng(myPosition.latitude, myPosition.longitude);
+    var directionalDetails= await AssistantMethods.obtainPlaceDirectionDetails(
+        widget.rideDetails.pickUp , currentLatlng);
+    Navigator.pop(context);
+    int fareAmount = AssistantMethods.calculateFares(directionalDetails);
+
+    String rideRequestId = widget.rideDetails.ride_request_id;
+    newRequestRef.child(rideRequestId).child('fares').set(fareAmount.toString());
+    newRequestRef.child(rideRequestId).child('status').set('ended');
+    rideStreamSubscription.cancel();
+    showDialog(
+        context: context ,
+        barrierDismissible: false,
+        builder: (BuildContext context)=>CollectFareDialog(
+          paymentMethod: widget.rideDetails.payment_method,
+          fareAmount: fareAmount,
+        )
+
+    );
+    saveEarnings(fareAmount);
+  }
+  void saveEarnings(int fareAmount)
+  {
+    driversRef.child(currentFireBaseUser.uid).child('earnings').once().then((DataSnapshot dataSnapShot)
+    {
+      if(dataSnapShot.value !=null)
+        {
+           double oldEarning = double.parse(dataSnapShot.value.toString());
+
+          double totalEarning = fareAmount+oldEarning;
+          driversRef.child(currentFireBaseUser.uid).child('earnings').set(totalEarning.toStringAsFixed(2));
+        }else
+          {
+            double totalEarning= fareAmount.toDouble();
+            driversRef.child(currentFireBaseUser.uid).child('earnings').set(totalEarning.toStringAsFixed(2));
+          }
+    });
   }
 }
