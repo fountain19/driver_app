@@ -152,7 +152,7 @@ int  durationCounter= 0;
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Yaser aslan',style: TextStyle(fontSize: 24.0,fontFamily: 'bolt-semibold',)),
+                        Text(widget.rideDetails.rider_name,style: TextStyle(fontSize: 24.0,fontFamily: 'bolt-semibold',)),
                         Padding(
                             padding: EdgeInsets.only(right: 10.0),
                         child: Icon(Icons.phone_android),),
@@ -164,7 +164,7 @@ int  durationCounter= 0;
                       children: [
                         Image.asset('images/pickicon.png',height: 16.0,width: 16.0,),
                         SizedBox(width: 18.0,),
-                        Expanded(child: Container(child: Text('istanbul',style: TextStyle(fontSize: 18.0),
+                        Expanded(child: Container(child: Text(widget.rideDetails.pickUp_address,style: TextStyle(fontSize: 18.0),
                         overflow: TextOverflow.ellipsis,
                         ))),
                       ],
@@ -175,7 +175,7 @@ int  durationCounter= 0;
                       children: [
                         Image.asset('images/desticon.png',height: 16.0,width: 16.0,),
                         SizedBox(width: 18.0,),
-                        Expanded(child: Container(child: Text('syria',style: TextStyle(fontSize: 18.0),
+                        Expanded(child: Container(child: Text(widget.rideDetails.dropOff_address,style: TextStyle(fontSize: 18.0),
                           overflow: TextOverflow.ellipsis,
                         ))),
                       ],
@@ -366,7 +366,7 @@ int  durationCounter= 0;
            'longitude': currentPosition.longitude.toString()
          };
      newRequestRef.child(rideRequestId).child('driverLocation').set(locMap);
-
+driversRef.child(currentFireBaseUser.uid).child('history').child(rideRequestId).set(true);
    }
   void createIconMarker()
   {
