@@ -80,8 +80,8 @@ class _HomeTabPageState extends State<HomeTabPage> {
           myLocationButtonEnabled: true,
           initialCameraPosition: HomeTabPage._kGooglePlex,
           myLocationEnabled: true,
-          // zoomGesturesEnabled: true,
-          // zoomControlsEnabled: true,
+          zoomGesturesEnabled: true,
+          zoomControlsEnabled: true,
           onMapCreated: (GoogleMapController controller)
           {
             _controllerGoogleMap.complete(controller);
