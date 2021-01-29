@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:driver_app/allScreen/registerationScreen.dart';
+import 'package:driver_app/assistants/assistantMethods.dart';
 import 'package:driver_app/configMaps.dart';
 import 'package:driver_app/main.dart';
 import 'package:driver_app/models/drivers.dart';
@@ -69,6 +70,8 @@ class _HomeTabPageState extends State<HomeTabPage> {
    });
    pushNotificationService.initialize(context);
    pushNotificationService.getToken();
+
+   AssistantMethods.retrieveHistoryInfo(context);
   }
 
   @override

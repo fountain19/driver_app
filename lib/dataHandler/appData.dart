@@ -4,15 +4,10 @@ import 'package:driver_app/models/address.dart';
 
 class AppData extends ChangeNotifier
 {
-   Address pickUpLocation ,dropOffLocation;
-   void updatePickUpLocationAddress(Address pickUpAddress)
+   String earnings ='0';
+   void updateEarnings(String updatedEarnings)
    {
-     pickUpLocation=pickUpAddress;
-     notifyListeners();
-   }
-   void updateDropOffLocationAddress(Address dropOffAddress)
-   {
-     dropOffLocation=dropOffAddress;
+     earnings =updatedEarnings;
      notifyListeners();
    }
 }
