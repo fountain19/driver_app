@@ -1,3 +1,4 @@
+import 'package:driver_app/allScreen/historyScreen.dart';
 import 'package:driver_app/dataHandler/appData.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +24,9 @@ class EarningTabPage extends StatelessWidget {
         ),
         FlatButton(
           padding: EdgeInsets.all(0),
-          onPressed: (){},
+          onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder:(context)=>HistoryScreen()));
+          },
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 30.0,vertical: 18.0),
             child: Row(
@@ -31,7 +34,10 @@ class EarningTabPage extends StatelessWidget {
                 Image.asset('images/uberx.png',width: 70,),
                 SizedBox(width: 16,),
                 Text('Total trips',style: TextStyle(fontSize: 16.0),),
-                Expanded(child: Container(child: Text('5',textAlign: TextAlign.end,
+                Expanded(child: Container(
+                  child: Text(
+                    Provider.of<AppData>(context,listen: false).counterTrips.toString(),
+                    textAlign: TextAlign.end,
                 style: TextStyle(
                   fontSize: 18.0
                 ),),)),
