@@ -15,3 +15,5 @@ StreamSubscription<Position> rideStreamSubscription;
 final AssetsAudioPlayer assetsAudioPlayer=AssetsAudioPlayer();
 Position currentPosition;
 Drivers driversInformation;
+String title = '' ;
+double starCounter=0.0;

@@ -44,8 +44,8 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
       children: [
           HomeTabPage(),
         EarningTabPage(),
-        ProfileTabPage(),
-        RatingTabPage()
+        RatingTabPage(),
+        ProfileTabPage()
       ],
       ),
       bottomNavigationBar: BottomNavigationBar(

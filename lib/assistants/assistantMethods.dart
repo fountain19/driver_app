@@ -94,6 +94,8 @@ class AssistantMethods{
   }
   static void retrieveHistoryInfo(context)
   {
+
+
     //retrieve and display earnings
     driversRef.child(currentFireBaseUser.uid).child('earnings').once().
     then((DataSnapshot dataSnapshot){

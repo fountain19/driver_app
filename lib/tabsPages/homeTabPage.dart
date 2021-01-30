@@ -42,9 +42,57 @@ class _HomeTabPageState extends State<HomeTabPage> {
     getCurrentDriverInfo();
   }
 
-
-
   var geoLocator=Geolocator();
+
+  getRatings()
+  {
+//Update ratings
+    driversRef.child(currentFireBaseUser.uid).child('ratings').once().
+    then((DataSnapshot dataSnapshot) {
+      if (dataSnapshot.value != null) {
+        double ratings = double.parse(dataSnapshot.value.toString());
+        setState(() {
+          starCounter = ratings;
+        });
+        if (starCounter <= 1) {
+          setState(() {
+            title = 'Very bad';
+          });
+
+          return;
+        }
+        else if (starCounter <= 2) {
+
+          setState(() {
+            title = ' Bad';
+          });
+          return;
+        }
+        else if (starCounter <= 3) {
+
+          setState(() {
+            title = ' Good';
+          });
+          return;
+        }
+        else if (starCounter <= 4) {
+
+          setState(() {
+            title = ' Very good';
+          });
+          return;
+        }
+        else if (starCounter <= 5) {
+
+          setState(() {
+            title = ' Excellent';
+          });
+          return;
+        }
+      }
+    });
+  }
+
 
   void locatePosition()async
   {
@@ -72,6 +120,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
    pushNotificationService.getToken();
 
    AssistantMethods.retrieveHistoryInfo(context);
+   getRatings();
   }
 
   @override
