@@ -43,6 +43,18 @@ class _HomeTabPageState extends State<HomeTabPage> {
   }
 
   var geoLocator=Geolocator();
+  getRideType()
+  {
+    driversRef.child(currentFireBaseUser.uid).child('car_details').child('tybe').once().
+    then((DataSnapshot snap){
+      if(snap.value != null)
+        {
+          setState(() {
+            rideType = snap.value.toString();
+          });
+        }
+    });
+  }
 
   getRatings()
   {
@@ -121,6 +133,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
 
    AssistantMethods.retrieveHistoryInfo(context);
    getRatings();
+   getRideType();
   }
 
   @override

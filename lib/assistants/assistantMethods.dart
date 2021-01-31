@@ -3,6 +3,7 @@ import 'package:driver_app/main.dart';
 import 'package:driver_app/models/history.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -64,10 +65,29 @@ class AssistantMethods{
      double distanceTraveledFare= (directionDetails.distanceValue/1000)*0.20;
      double totalFareAmount= timeTraveledFare+distanceTraveledFare;
 
+     if(rideType=='uber-x')
+       {
+         double result = (totalFareAmount.truncate())*2.0;
+         return result.truncate();
+       }
+     else if(rideType=='uber-go')
+     {
+       return totalFareAmount.truncate();
+     }
+     else if(rideType=='bike')
+     {
+       double result = (totalFareAmount.truncate())/2.0;
+       return result.truncate();
+     }
+     else
+       {
+         return totalFareAmount.truncate();
+       }
+
      // local currency
     // in turkey 1$ = 7.5
     // double totalLocalAmount= totalFareAmount*7.5;
-    return totalFareAmount.truncate();
+
   }
    // static void getCurrentOnlineUserInfo() async
    // {

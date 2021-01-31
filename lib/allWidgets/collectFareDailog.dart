@@ -1,4 +1,5 @@
 import 'package:driver_app/assistants/assistantMethods.dart';
+import 'package:driver_app/configMaps.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -25,7 +26,7 @@ class CollectFareDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(height: 22.0,),
-            Text('Trip fare'),
+            Text('Trip fare ('+ rideType.toUpperCase()+ ')'),
             SizedBox(height: 22.0,),
             Divider(),
             SizedBox(height: 16.0,),
